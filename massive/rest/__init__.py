@@ -54,6 +54,9 @@ class RESTClient(
         connect_timeout: float = 10.0,
         read_timeout: float = 10.0,
         num_pools: int = 10,
+        # Per-host connection limit. 10 rather than urllib3's default of 1 so that
+        # threaded clients work sensibly out of the box; see BaseClient.
+        maxsize: int = 10,
         retries: int = 3,
         base: str = BASE,
         pagination: bool = True,
@@ -66,6 +69,7 @@ class RESTClient(
             connect_timeout=connect_timeout,
             read_timeout=read_timeout,
             num_pools=num_pools,
+            maxsize=maxsize,
             retries=retries,
             base=base,
             pagination=pagination,
@@ -78,6 +82,7 @@ class RESTClient(
             connect_timeout=connect_timeout,
             read_timeout=read_timeout,
             num_pools=num_pools,
+            maxsize=maxsize,
             retries=retries,
             base=base,
             pagination=pagination,

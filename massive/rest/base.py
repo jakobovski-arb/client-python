@@ -34,6 +34,7 @@ class BaseClient:
         verbose: bool,
         trace: bool,
         custom_json: Optional[Any] = None,
+        maxsize: int = 10,
     ):
         if api_key is None:
             raise AuthError(
@@ -75,6 +76,11 @@ class BaseClient:
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool
         self.client = urllib3.PoolManager(
             num_pools=num_pools,
+            # Connections kept per HOST. urllib3 defaults this to 1, which serialises
+            # any threaded client onto a single connection and renegotiates TLS for
+            # every request that cannot get it. num_pools does not help: it caps the
+            # number of distinct host pools, and this client talks to one host.
+            maxsize=maxsize,
             headers=self.headers,  # default headers sent with each request.
             ca_certs=certifi.where(),
             cert_reqs="CERT_REQUIRED",
